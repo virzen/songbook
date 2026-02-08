@@ -87,12 +87,18 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             
-            # Fetch latest changes to ensure we're in sync
-            git pull origin gh-pages
+            # Fetch latest changes and reset to remote state to avoid merge conflicts
+            git fetch origin gh-pages
+            git reset --hard origin/gh-pages
             
-            git rm -rf "$PR_DIR"
-            git commit -m "Clean up PR #${PR_NUMBER} preview" || echo "No changes to clean up"
-            git push
+            # Check if directory still exists after sync (may have been deleted by another job)
+            if [ -d "$PR_DIR" ]; then
+              git rm -rf "$PR_DIR"
+              git commit -m "Clean up PR #${PR_NUMBER} preview"
+              git push
+            else
+              echo "Preview directory was already cleaned up, nothing to do"
+            fi
           else
             echo "Preview directory not found, nothing to clean up"
           fi

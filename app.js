@@ -100,9 +100,13 @@ class SongbookApp {
     }
 
     async saveToDatabase() {
-        // Skip database save in test mode
-        if (!this.configured || !this.supabaseClient) {
+        // In test mode, there's no Supabase client
+        if (!this.supabaseClient) {
             return { error: null };
+        }
+
+        if (!this.configured) {
+            throw new Error('Database not configured');
         }
 
         try {

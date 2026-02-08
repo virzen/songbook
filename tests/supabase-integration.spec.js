@@ -291,9 +291,17 @@ test.describe('Mock Database Integration', () => {
     // Get initial save count
     const initialCount = await page.evaluate(() => window.mockSupabaseData.saveCount);
     
-    // Delete the song
-    page.on('dialog', dialog => dialog.accept());
+    // Set up dialog handler to confirm deletion
+    let dialogShown = false;
+    page.on('dialog', dialog => {
+      dialogShown = true;
+      dialog.accept();
+    });
+    
     await page.click('#deleteSongBtn');
+    
+    // Verify dialog was shown
+    expect(dialogShown).toBe(true);
     
     // Check that database was called
     const finalCount = await page.evaluate(() => window.mockSupabaseData.saveCount);

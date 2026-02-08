@@ -8,7 +8,7 @@ const { test, expect } = require('@playwright/test');
 
 // Helper to clear local storage before each test
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?testMode=true');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
 });

@@ -7,14 +7,14 @@ class SongbookApp {
         this.init();
     }
 
-    init() {
-        this.loadFromStorage();
+    async init() {
+        await this.loadFromStorage();
         this.setupEventListeners();
         this.renderSongList();
     }
 
     // Local Storage
-    loadFromStorage() {
+    async loadFromStorage() {
         const stored = localStorage.getItem('songbook');
         if (stored) {
             try {
@@ -23,6 +23,26 @@ class SongbookApp {
             } catch (e) {
                 console.error('Error loading from storage:', e);
             }
+        }
+        
+        // If no songs loaded, initialize with sample songs
+        if (this.songs.length === 0) {
+            await this.loadSampleSongs();
+        }
+    }
+    
+    async loadSampleSongs() {
+        try {
+            const response = await fetch('sample-songs.json');
+            if (response.ok) {
+                const data = await response.json();
+                if (data.songs && Array.isArray(data.songs)) {
+                    this.songs = data.songs;
+                    this.saveToStorage();
+                }
+            }
+        } catch (e) {
+            console.error('Error loading sample songs:', e);
         }
     }
 

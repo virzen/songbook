@@ -4,41 +4,15 @@ This directory contains end-to-end tests for the Songbook application using Play
 
 ## Test Coverage
 
-The test suite includes **46 tests** covering all major features from a user perspective:
+### Functional Tests (`songbook.spec.js`)
+- Song CRUD operations (create, read, update, delete)
+- Search and filtering
+- Import/Export functionality
+- Local storage persistence
+- Edge cases and validation
 
-### Core Functionality (`songbook.spec.js` - 37 tests)
-- **Song List View**: Empty state, UI elements, search input
-- **Add Song**: Form display, validation, saving, cancellation
-- **Edit Song**: Pre-filled form, updates, cancellation
-- **Delete Song**: Confirmation dialog, successful deletion
-- **Song Display**: Chord formatting, lyrics display, navigation
-
-### Advanced Features
-- **Search**: Filter by title/artist, case-insensitive search, no results handling
-- **Import**: JSON text import, file selection, validation, duplicate handling
-- **Export**: Download JSON files
-- **Print**: Print button availability
-- **Persistence**: Local storage across reloads
-
-### Edge Cases
-- Special characters handling
-- Empty artist fields
-- Multiple chord formats
-- Complex lyrics with empty lines
-
-### Visual Snapshot Tests (`snapshots.spec.js` - 9 tests)
-Visual regression testing to catch unintended UI changes:
-- Empty song list view
-- Song list with multiple songs
-- Add song form (empty)
-- Song display with formatted chords
-- Edit song form (pre-filled)
-- Search results
-- Import modal
-- Search with no results
-- Mobile viewport rendering
-
-Snapshot tests capture screenshots and compare them against baseline images to detect visual changes.
+### Visual Snapshot Tests (`snapshots.spec.js`)
+Visual regression testing to catch unintended UI changes across all major views and states, including mobile viewport.
 
 ## Running Tests
 
@@ -92,32 +66,15 @@ The CI workflow is defined in `.github/workflows/playwright.yml`.
 
 ## Test Structure
 
-Tests are organized into two files:
+### `songbook.spec.js`
+Functional E2E tests covering all features and user interactions.
 
-### `songbook.spec.js` (37 functional tests)
-- Song List View
-- Add Song Functionality
-- Song Display and Navigation
-- Edit Song Functionality
-- Delete Song Functionality
-- Search Functionality
-- Import Functionality
-- Export Functionality
-- Print Functionality
-- Song List Sorting
-- Local Storage Persistence
-- Edge Cases
-
-### `snapshots.spec.js` (9 visual tests)
-- Visual regression tests using screenshot comparison
-- Covers all major views and UI states
-- Includes mobile viewport testing
-- Baseline images stored in `tests/snapshots.spec.js-snapshots/`
+### `snapshots.spec.js`
+Visual regression tests using screenshot comparison. Baseline images stored in `tests/snapshots.spec.js-snapshots/`.
 
 ## Writing New Tests
 
 ### Functional Tests
-When adding new features:
 1. Add tests to `tests/songbook.spec.js`
 2. Follow the existing test structure
 3. Test from user perspective (E2E)

@@ -34,12 +34,29 @@ class SongbookApp {
     async loadSampleSongs() {
         try {
             const response = await fetch('sample-songs.json');
-            if (response.ok) {
-                const data = await response.json();
-                if (data.songs && Array.isArray(data.songs)) {
-                    this.songs = data.songs;
-                    this.saveToStorage();
+            if (!response.ok) {
+                console.error('Failed to load sample songs: HTTP', response.status);
+                return;
+            }
+            
+            const data = await response.json();
+            if (!data.songs || !Array.isArray(data.songs)) {
+                console.error('Invalid sample songs format: missing songs array');
+                return;
+            }
+            
+            // Validate each song has required properties
+            const validSongs = data.songs.filter(song => {
+                if (!song.title || !song.lyrics) {
+                    console.warn('Skipping invalid song: missing title or lyrics', song);
+                    return false;
                 }
+                return true;
+            });
+            
+            if (validSongs.length > 0) {
+                this.songs = validSongs;
+                this.saveToStorage();
             }
         } catch (e) {
             console.error('Error loading sample songs:', e);

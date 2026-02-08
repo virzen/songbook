@@ -36,6 +36,9 @@ class SongbookApp {
 
     // Event Listeners
     setupEventListeners() {
+        // Header title
+        document.getElementById('mainTitle').addEventListener('click', () => this.showSongList());
+
         // Header buttons
         document.getElementById('addSongBtn').addEventListener('click', () => this.showAddSong());
         document.getElementById('importBtn').addEventListener('click', () => this.showImportModal());

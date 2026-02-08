@@ -85,6 +85,28 @@ The app is hosted on GitHub Pages and ready to use at the URL above.
 
 3. Open `http://localhost:8000` in your browser
 
+## Testing
+
+The application has a comprehensive E2E test suite using Playwright covering all features from a user perspective, including visual snapshot tests for UI regression detection.
+
+### Running Tests
+
+```bash
+# Install dependencies
+npm install
+
+# Run all tests
+npm test
+
+# Run tests with browser UI visible
+npm run test:headed
+
+# Run tests in interactive mode
+npm run test:ui
+```
+
+See [tests/README.md](tests/README.md) for more information about the test suite.
+
 ## Technical Details
 
 - **Pure HTML/CSS/JavaScript**: No frameworks or build tools required

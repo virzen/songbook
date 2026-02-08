@@ -89,6 +89,10 @@ The app is hosted on GitHub Pages and ready to use at the URL above.
 
 The application has a comprehensive E2E test suite using Playwright that tests all features from a user perspective.
 
+**Test Coverage**: 46 tests including:
+- 37 functional tests covering all CRUD operations, search, import/export, and edge cases
+- 9 visual snapshot tests for detecting unintended UI changes
+
 ### Running Tests
 
 ```bash

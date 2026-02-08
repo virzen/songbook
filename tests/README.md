@@ -4,9 +4,9 @@ This directory contains end-to-end tests for the Songbook application using Play
 
 ## Test Coverage
 
-The test suite covers all major features from a user perspective:
+The test suite includes **46 tests** covering all major features from a user perspective:
 
-### Core Functionality
+### Core Functionality (`songbook.spec.js` - 37 tests)
 - **Song List View**: Empty state, UI elements, search input
 - **Add Song**: Form display, validation, saving, cancellation
 - **Edit Song**: Pre-filled form, updates, cancellation
@@ -26,6 +26,20 @@ The test suite covers all major features from a user perspective:
 - Multiple chord formats
 - Complex lyrics with empty lines
 
+### Visual Snapshot Tests (`snapshots.spec.js` - 9 tests)
+Visual regression testing to catch unintended UI changes:
+- Empty song list view
+- Song list with multiple songs
+- Add song form (empty)
+- Song display with formatted chords
+- Edit song form (pre-filled)
+- Search results
+- Import modal
+- Search with no results
+- Mobile viewport rendering
+
+Snapshot tests capture screenshots and compare them against baseline images to detect visual changes.
+
 ## Running Tests
 
 ### Prerequisites
@@ -36,6 +50,21 @@ npm install
 ### Run all tests (headless)
 ```bash
 npm test
+```
+
+### Run only functional tests
+```bash
+npm test -- tests/songbook.spec.js
+```
+
+### Run only snapshot tests
+```bash
+npm test -- tests/snapshots.spec.js
+```
+
+### Update snapshot baselines (after intentional UI changes)
+```bash
+npm test -- tests/snapshots.spec.js --update-snapshots
 ```
 
 ### Run tests with browser UI
@@ -63,7 +92,9 @@ The CI workflow is defined in `.github/workflows/playwright.yml`.
 
 ## Test Structure
 
-Tests are organized by feature:
+Tests are organized into two files:
+
+### `songbook.spec.js` (37 functional tests)
 - Song List View
 - Add Song Functionality
 - Song Display and Navigation
@@ -77,14 +108,33 @@ Tests are organized by feature:
 - Local Storage Persistence
 - Edge Cases
 
+### `snapshots.spec.js` (9 visual tests)
+- Visual regression tests using screenshot comparison
+- Covers all major views and UI states
+- Includes mobile viewport testing
+- Baseline images stored in `tests/snapshots.spec.js-snapshots/`
+
 ## Writing New Tests
 
+### Functional Tests
 When adding new features:
 1. Add tests to `tests/songbook.spec.js`
 2. Follow the existing test structure
 3. Test from user perspective (E2E)
 4. Include both happy path and edge cases
 5. Ensure tests clean up after themselves (use beforeEach hook)
+
+### Snapshot Tests
+When making UI changes:
+1. Run tests to see visual differences: `npm test -- tests/snapshots.spec.js`
+2. Review the diff images in `test-results/`
+3. If changes are intentional, update baselines: `npm test -- tests/snapshots.spec.js --update-snapshots`
+4. Commit updated snapshot images with your changes
+
+For new UI features:
+1. Add snapshot tests to `tests/snapshots.spec.js`
+2. Generate baseline: `npm test -- tests/snapshots.spec.js --update-snapshots`
+3. Commit the new snapshot images
 
 ## Debugging
 

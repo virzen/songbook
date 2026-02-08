@@ -33,6 +33,12 @@ test.describe('Supabase Configuration UI', () => {
 
 test.describe('Mock Database Integration', () => {
   test.beforeEach(async ({ page }) => {
+    // Clear localStorage before each test
+    await page.goto('/');
+    await page.evaluate(() => {
+      localStorage.clear();
+    });
+    
     // Mock Supabase client
     await page.addInitScript(() => {
       window.mockSupabaseData = {
@@ -59,7 +65,7 @@ test.describe('Mock Database Integration', () => {
                           // Return stored data or empty
                           if (window.mockSupabaseData.data) {
                             return { 
-                              data: { state: window.mockSupabaseData.data }, 
+                              data: { state: window.mockSupabaseData.data, username: value }, 
                               error: null 
                             };
                           }

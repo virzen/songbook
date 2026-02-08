@@ -6,6 +6,7 @@ class SongbookApp {
         this.editingSongId = null;
         this.supabaseClient = null;
         this.username = null;
+        this.userId = null; // Unique ID for this user's data
         this.configured = false;
         this.init();
     }
@@ -26,6 +27,16 @@ class SongbookApp {
             this.loadFromStorage();
             this.renderSongList();
             return;
+        }
+
+        // Load saved credentials from localStorage
+        const savedUrl = localStorage.getItem('supabaseUrl');
+        const savedKey = localStorage.getItem('supabaseKey');
+        if (savedUrl) {
+            document.getElementById('supabaseUrl').value = savedUrl;
+        }
+        if (savedKey) {
+            document.getElementById('supabaseKey').value = savedKey;
         }
 
         const configForm = document.getElementById('configForm');
@@ -60,11 +71,18 @@ class SongbookApp {
             // Initialize Supabase client
             const client = supabase.createClient(supabaseUrl, supabaseKey);
             
-            // Test connection by trying to read from database
+            // Generate or retrieve a unique userId for this browser/session
+            let userId = localStorage.getItem('supabaseUserId');
+            if (!userId) {
+                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('supabaseUserId', userId);
+            }
+            
+            // Test connection by trying to read from database using userId
             const { data, error } = await client
                 .from('global_state')
-                .select('state')
-                .eq('username', username)
+                .select('state, username')
+                .eq('username', userId) // Use userId as the unique key
                 .single();
             
             if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found (user has no saved state yet)
@@ -73,8 +91,13 @@ class SongbookApp {
 
             // Only set state after successful connection
             this.supabaseClient = client;
-            this.username = username;
+            this.userId = userId; // Store the unique user ID
+            this.username = username; // Username is just for logging/display
             this.configured = true;
+
+            // Save URL and key to localStorage for future sessions
+            localStorage.setItem('supabaseUrl', supabaseUrl);
+            localStorage.setItem('supabaseKey', supabaseKey);
 
             // Load data if found
             if (data && data.state) {
@@ -88,6 +111,7 @@ class SongbookApp {
         } catch (error) {
             // Reset state on failure
             this.supabaseClient = null;
+            this.userId = null;
             this.username = null;
             this.configured = false;
             
@@ -106,8 +130,8 @@ class SongbookApp {
         try {
             const { data, error } = await this.supabaseClient
                 .from('global_state')
-                .select('state')
-                .eq('username', this.username)
+                .select('state, username')
+                .eq('username', this.userId) // Use userId as the unique key
                 .single();
 
             if (error) {
@@ -147,7 +171,7 @@ class SongbookApp {
             const { error } = await this.supabaseClient
                 .from('global_state')
                 .upsert({
-                    username: this.username,
+                    username: this.userId, // Use userId as the unique key
                     state: stateData
                 }, {
                     onConflict: 'username'

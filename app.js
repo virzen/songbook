@@ -45,25 +45,57 @@ class SongbookApp {
             return;
         }
 
-        try {
-            // Initialize Supabase client
-            this.supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-            this.username = username;
+        // Disable submit button during submission
+        const submitBtn = document.querySelector('#configForm button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Connecting...';
 
-            // Test connection by trying to read from database
-            const { error } = await this.loadFromDatabase();
+        try {
+            // Check if supabase is available (CDN loaded)
+            if (typeof supabase === 'undefined') {
+                throw new Error('Supabase library not loaded. Please check your internet connection and reload the page.');
+            }
+
+            // Initialize Supabase client
+            const client = supabase.createClient(supabaseUrl, supabaseKey);
             
-            if (error) {
+            // Test connection by trying to read from database
+            const { data, error } = await client
+                .from('global_state')
+                .select('state')
+                .eq('username', username)
+                .single();
+            
+            if (error && error.code !== 'PGRST116') {
                 throw new Error('Failed to connect to database: ' + error.message);
             }
 
-            // Mark as configured and hide modal
+            // Only set state after successful connection
+            this.supabaseClient = client;
+            this.username = username;
             this.configured = true;
+
+            // Load data if found
+            if (data && data.state) {
+                const parsed = JSON.parse(data.state);
+                this.songs = parsed.songs || [];
+            }
+
+            // Hide modal and show app
             document.getElementById('configModal').classList.remove('active');
-            
-            // Load songs and render
             this.renderSongList();
         } catch (error) {
+            // Reset state on failure
+            this.supabaseClient = null;
+            this.username = null;
+            this.configured = false;
+            
+            // Re-enable button
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+            
+            // Show error message
             alert('Configuration failed: ' + error.message);
             console.error('Configuration error:', error);
         }

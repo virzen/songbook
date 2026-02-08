@@ -285,9 +285,9 @@ class SongbookApp {
             document.getElementById('importData').value = content;
         };
         reader.onerror = () => {
-            alert('Error reading file');
+            alert(`Error reading file "${file.name}". Please ensure the file is a valid text file.`);
         };
-        reader.readAsText(file);
+        reader.readAsText(file, 'UTF-8');
     }
 
     importSongs() {

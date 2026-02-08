@@ -63,6 +63,7 @@ class SongbookApp {
         // Import modal
         document.getElementById('cancelImportBtn').addEventListener('click', () => this.hideImportModal());
         document.getElementById('confirmImportBtn').addEventListener('click', () => this.importSongs());
+        document.getElementById('importFile').addEventListener('change', (e) => this.handleFileSelect(e));
     }
 
     // View Management
@@ -267,16 +268,32 @@ class SongbookApp {
     showImportModal() {
         document.getElementById('importModal').classList.add('active');
         document.getElementById('importData').value = '';
+        document.getElementById('importFile').value = '';
     }
 
     hideImportModal() {
         document.getElementById('importModal').classList.remove('active');
     }
 
+    handleFileSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const content = e.target.result;
+            document.getElementById('importData').value = content;
+        };
+        reader.onerror = () => {
+            alert('Error reading file');
+        };
+        reader.readAsText(file);
+    }
+
     importSongs() {
         const data = document.getElementById('importData').value;
         if (!data.trim()) {
-            alert('Please paste JSON data to import');
+            alert('Please select a file or paste JSON data to import');
             return;
         }
 

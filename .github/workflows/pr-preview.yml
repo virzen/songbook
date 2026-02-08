@@ -30,6 +30,7 @@ jobs:
           publish_dir: ./public
           destination_dir: pr-${{ github.event.pull_request.number }}
           keep_files: true
+          force_orphan: false
 
       - name: Comment PR
         uses: actions/github-script@v7
@@ -85,6 +86,9 @@ jobs:
           if [ -d "$PR_DIR" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
+            
+            # Fetch latest changes to ensure we're in sync
+            git pull origin gh-pages
             
             git rm -rf "$PR_DIR"
             git commit -m "Clean up PR #${PR_NUMBER} preview" || echo "No changes to clean up"

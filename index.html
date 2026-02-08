@@ -72,8 +72,19 @@ That [Am]saved a [G]wretch like [C]me"></textarea>
         <div id="importModal" class="modal">
             <div class="modal-content">
                 <h2>Import Songs</h2>
-                <p>Paste your exported JSON data below:</p>
-                <textarea id="importData" rows="10" placeholder='{"songs": [...]}'></textarea>
+                <div class="import-options">
+                    <div class="import-option">
+                        <h3>Option 1: Select a file</h3>
+                        <input type="file" id="importFile" accept=".json,application/json" />
+                    </div>
+                    <div class="import-divider">
+                        <span>OR</span>
+                    </div>
+                    <div class="import-option">
+                        <h3>Option 2: Paste JSON data</h3>
+                        <textarea id="importData" rows="10" placeholder='{"songs": [...]}'></textarea>
+                    </div>
+                </div>
                 <div class="modal-buttons">
                     <button id="cancelImportBtn" class="btn">Cancel</button>
                     <button id="confirmImportBtn" class="btn btn-primary">Import</button>

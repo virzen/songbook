@@ -201,6 +201,7 @@ header h1 {
     position: relative;
     display: inline-block;
     white-space: nowrap;
+    border: 1px solid tomato;
 }
 
 .chord::before {
@@ -212,6 +213,7 @@ header h1 {
     color: var(--primary-color);
     font-weight: bold;
     white-space: nowrap;
+    border: 1px solid yellow;
 }
 
 /* Song Form */

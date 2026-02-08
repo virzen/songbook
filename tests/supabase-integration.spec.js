@@ -131,8 +131,11 @@ test.describe('Mock Database Integration', () => {
     await page.fill('#username', 'testuser');
     await page.click('#configForm button[type="submit"]');
     
-    // Wait for error handling to complete
-    await page.waitForTimeout(1000);
+    // Wait for error handling to complete by checking button is re-enabled
+    await page.waitForFunction(() => {
+      const btn = document.querySelector('#configForm button[type="submit"]');
+      return !btn.disabled && btn.textContent === 'Connect';
+    }, { timeout: 5000 });
     
     // Verify error was shown
     expect(dialogShown).toBe(true);
@@ -202,11 +205,10 @@ test.describe('Mock Database Integration', () => {
     await page.fill('#songLyrics', 'Test');
     await page.click('#saveSongBtn');
     
-    // Wait a bit for async operations
-    await page.waitForTimeout(500);
-    
-    // Should still be on edit view (save failed)
+    // Wait for save attempt to complete by checking we're still on edit view
     await expect(page.locator('#songEditView')).toBeVisible();
+    
+    // Verify error dialog was shown
     expect(dialogShown).toBe(true);
   });
 
@@ -244,8 +246,8 @@ test.describe('Mock Database Integration', () => {
     await page.fill('#username', 'testuser');
     await page.click('#configForm button[type="submit"]');
     
-    // Wait for load
-    await page.waitForTimeout(500);
+    // Wait for configuration and song list to load
+    await page.waitForSelector('#configModal', { state: 'hidden', timeout: 5000 });
     
     // Song should be there
     const songCard = page.locator('.song-card').first();

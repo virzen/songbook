@@ -67,7 +67,7 @@ class SongbookApp {
                 .eq('username', username)
                 .single();
             
-            if (error && error.code !== 'PGRST116') {
+            if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found (user has no saved state yet)
                 throw new Error('Failed to connect to database: ' + error.message);
             }
 

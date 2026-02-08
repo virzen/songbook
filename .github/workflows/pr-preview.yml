@@ -30,6 +30,7 @@ jobs:
           publish_dir: ./public
           destination_dir: pr-${{ github.event.pull_request.number }}
           keep_files: true
+          force_orphan: false
 
       - name: Comment PR
         uses: actions/github-script@v7
@@ -86,9 +87,18 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             
-            git rm -rf "$PR_DIR"
-            git commit -m "Clean up PR #${PR_NUMBER} preview" || echo "No changes to clean up"
-            git push
+            # Fetch latest changes and reset to remote state to avoid merge conflicts
+            git fetch origin gh-pages
+            git reset --hard origin/gh-pages
+            
+            # Check if directory still exists after sync (may have been deleted by another job)
+            if [ -d "$PR_DIR" ]; then
+              git rm -rf "$PR_DIR"
+              git commit -m "Clean up PR #${PR_NUMBER} preview"
+              git push
+            else
+              echo "Preview directory was already cleaned up, nothing to do"
+            fi
           else
             echo "Preview directory not found, nothing to clean up"
           fi

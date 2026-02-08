@@ -201,7 +201,6 @@ header h1 {
     position: relative;
     display: inline-block;
     white-space: nowrap;
-    font-size: 0;
 }
 
 .chord::before {

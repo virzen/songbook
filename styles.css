@@ -206,7 +206,7 @@ header h1 {
 .chord::before {
     content: attr(data-chord);
     position: absolute;
-    top: -2em;
+    top: -3em;
     left: 0;
     font-size: 13px;
     color: var(--primary-color);

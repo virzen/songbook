@@ -87,7 +87,7 @@ The app is hosted on GitHub Pages and ready to use at the URL above.
 
 ## Testing
 
-The application has a comprehensive E2E test suite using Playwright that tests all features from a user perspective.
+The application has a comprehensive E2E test suite using Playwright covering all features from a user perspective, including visual snapshot tests for UI regression detection.
 
 ### Running Tests
 

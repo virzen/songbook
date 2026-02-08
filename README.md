@@ -15,7 +15,7 @@ A simple, front-end only web application for managing and displaying song lyrics
 
 ## Demo
 
-Visit the live demo: [https://dawidlehai.github.io/songbook/](https://dawidlehai.github.io/songbook/)
+Visit the live demo: [https://virzen.github.io/songbook/](https://virzen.github.io/songbook/)
 
 ## Usage
 
@@ -70,7 +70,7 @@ The app is hosted on GitHub Pages and ready to use at the URL above.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/dawidlehai/songbook.git
+   git clone https://github.com/virzen/songbook.git
    cd songbook
    ```
 

@@ -21,7 +21,7 @@ jobs:
       - name: Prepare public directory
         run: |
           mkdir -p public
-          cp -r *.html *.js *.css *.json public/ 2>/dev/null || true
+          rsync -av --exclude='.git' --exclude='.github' --exclude='public' ./ public/
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4

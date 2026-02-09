@@ -65,7 +65,11 @@ test.describe('Mock Database Integration', () => {
                           // Return stored data or empty
                           if (window.mockSupabaseData.data) {
                             return { 
-                              data: { state: window.mockSupabaseData.data, id: value }, 
+                              data: { 
+                                state: window.mockSupabaseData.data, 
+                                id: value,
+                                username: window.mockSupabaseData.username || 'testuser'
+                              }, 
                               error: null 
                             };
                           }
@@ -86,6 +90,7 @@ test.describe('Mock Database Integration', () => {
                   }
                   
                   window.mockSupabaseData.data = data.state;
+                  window.mockSupabaseData.username = data.username; // Store username
                   window.mockSupabaseData.saveCount++;
                   return { error: null };
                 }

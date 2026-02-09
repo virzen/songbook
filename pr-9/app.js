@@ -93,7 +93,7 @@ class SongbookApp {
             // Test connection by trying to read from database using userId
             const { data, error } = await client
                 .from('global_state')
-                .select('state, id')
+                .select('state, id, username')
                 .eq('id', userId) // Use id field as the unique key
                 .single();
             
@@ -142,7 +142,7 @@ class SongbookApp {
         try {
             const { data, error } = await this.supabaseClient
                 .from('global_state')
-                .select('state, id')
+                .select('state, id, username')
                 .eq('id', this.userId) // Use id field as the unique key
                 .single();
 
@@ -183,7 +183,8 @@ class SongbookApp {
             const { error } = await this.supabaseClient
                 .from('global_state')
                 .upsert({
-                    id: this.userId, // Use id field as the unique key (UUID v4)
+                    id: this.userId, // Use id field as the unique key (bigint)
+                    username: this.username, // Include username for logging/display
                     state: stateData
                 }, {
                     onConflict: 'id'

@@ -71,11 +71,22 @@ class SongbookApp {
             // Initialize Supabase client
             const client = supabase.createClient(supabaseUrl, supabaseKey);
             
-            // Generate or retrieve a unique UUID v4 for this browser/session
+            // Generate or retrieve a unique random bigint for this browser/session
             let userId = localStorage.getItem('supabaseUserId');
             if (!userId) {
-                // Generate UUID v4
-                userId = self.crypto.randomUUID();
+                // Generate random bigint using crypto module
+                // Generate 8 bytes (64 bits) for a JavaScript safe integer range
+                const randomBytes = new Uint8Array(8);
+                self.crypto.getRandomValues(randomBytes);
+                
+                // Convert to bigint (JavaScript safe integer range)
+                let randomBigInt = 0n;
+                for (let i = 0; i < 8; i++) {
+                    randomBigInt = (randomBigInt << 8n) | BigInt(randomBytes[i]);
+                }
+                
+                // Convert to string for storage and ensure it's positive
+                userId = (randomBigInt & 0x7FFFFFFFFFFFFFFFn).toString();
                 localStorage.setItem('supabaseUserId', userId);
             }
             

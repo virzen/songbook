@@ -71,18 +71,19 @@ class SongbookApp {
             // Initialize Supabase client
             const client = supabase.createClient(supabaseUrl, supabaseKey);
             
-            // Generate or retrieve a unique userId for this browser/session
+            // Generate or retrieve a unique UUID v4 for this browser/session
             let userId = localStorage.getItem('supabaseUserId');
             if (!userId) {
-                userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                // Generate UUID v4
+                userId = self.crypto.randomUUID();
                 localStorage.setItem('supabaseUserId', userId);
             }
             
             // Test connection by trying to read from database using userId
             const { data, error } = await client
                 .from('global_state')
-                .select('state, username')
-                .eq('username', userId) // Use userId as the unique key
+                .select('state, id')
+                .eq('id', userId) // Use id field as the unique key
                 .single();
             
             if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found (user has no saved state yet)
@@ -130,8 +131,8 @@ class SongbookApp {
         try {
             const { data, error } = await this.supabaseClient
                 .from('global_state')
-                .select('state, username')
-                .eq('username', this.userId) // Use userId as the unique key
+                .select('state, id')
+                .eq('id', this.userId) // Use id field as the unique key
                 .single();
 
             if (error) {
@@ -171,10 +172,10 @@ class SongbookApp {
             const { error } = await this.supabaseClient
                 .from('global_state')
                 .upsert({
-                    username: this.userId, // Use userId as the unique key
+                    id: this.userId, // Use id field as the unique key (UUID v4)
                     state: stateData
                 }, {
-                    onConflict: 'username'
+                    onConflict: 'id'
                 });
 
             if (error) {

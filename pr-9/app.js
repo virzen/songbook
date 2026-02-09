@@ -6,6 +6,7 @@ class SongbookApp {
         this.editingSongId = null;
         this.supabaseClient = null;
         this.username = null;
+        this.userId = null; // Unique ID for this user's data
         this.configured = false;
         this.init();
     }
@@ -28,6 +29,16 @@ class SongbookApp {
             return;
         }
 
+        // Load saved credentials from localStorage
+        const savedUrl = localStorage.getItem('supabaseUrl');
+        const savedKey = localStorage.getItem('supabaseKey');
+        if (savedUrl) {
+            document.getElementById('supabaseUrl').value = savedUrl;
+        }
+        if (savedKey) {
+            document.getElementById('supabaseKey').value = savedKey;
+        }
+
         const configForm = document.getElementById('configForm');
         configForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -45,25 +56,71 @@ class SongbookApp {
             return;
         }
 
-        try {
-            // Initialize Supabase client
-            this.supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
-            this.username = username;
+        // Disable submit button during submission
+        const submitBtn = document.querySelector('#configForm button[type="submit"]');
+        const originalBtnText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Connecting...';
 
-            // Test connection by trying to read from database
-            const { error } = await this.loadFromDatabase();
+        try {
+            // Check if supabase is available (CDN loaded)
+            if (typeof supabase === 'undefined') {
+                throw new Error('Supabase library not loaded. Please check your internet connection and reload the page.');
+            }
+
+            // Initialize Supabase client
+            const client = supabase.createClient(supabaseUrl, supabaseKey);
             
-            if (error) {
+            // Generate or retrieve a unique UUID v4 for this browser/session
+            let userId = localStorage.getItem('supabaseUserId');
+            if (!userId) {
+                // Generate UUID v4
+                userId = self.crypto.randomUUID();
+                localStorage.setItem('supabaseUserId', userId);
+            }
+            
+            // Test connection by trying to read from database using userId
+            const { data, error } = await client
+                .from('global_state')
+                .select('state, id')
+                .eq('id', userId) // Use id field as the unique key
+                .single();
+            
+            if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found (user has no saved state yet)
                 throw new Error('Failed to connect to database: ' + error.message);
             }
 
-            // Mark as configured and hide modal
+            // Only set state after successful connection
+            this.supabaseClient = client;
+            this.userId = userId; // Store the unique user ID
+            this.username = username; // Username is just for logging/display
             this.configured = true;
+
+            // Save URL and key to localStorage for future sessions
+            localStorage.setItem('supabaseUrl', supabaseUrl);
+            localStorage.setItem('supabaseKey', supabaseKey);
+
+            // Load data if found
+            if (data && data.state) {
+                const parsed = JSON.parse(data.state);
+                this.songs = parsed.songs || [];
+            }
+
+            // Hide modal and show app
             document.getElementById('configModal').classList.remove('active');
-            
-            // Load songs and render
             this.renderSongList();
         } catch (error) {
+            // Reset state on failure
+            this.supabaseClient = null;
+            this.userId = null;
+            this.username = null;
+            this.configured = false;
+            
+            // Re-enable button
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
+            
+            // Show error message
             alert('Configuration failed: ' + error.message);
             console.error('Configuration error:', error);
         }
@@ -74,8 +131,8 @@ class SongbookApp {
         try {
             const { data, error } = await this.supabaseClient
                 .from('global_state')
-                .select('state')
-                .eq('username', this.username)
+                .select('state, id')
+                .eq('id', this.userId) // Use id field as the unique key
                 .single();
 
             if (error) {
@@ -115,10 +172,10 @@ class SongbookApp {
             const { error } = await this.supabaseClient
                 .from('global_state')
                 .upsert({
-                    username: this.username,
+                    id: this.userId, // Use id field as the unique key (UUID v4)
                     state: stateData
                 }, {
-                    onConflict: 'username'
+                    onConflict: 'id'
                 });
 
             if (error) {

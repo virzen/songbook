@@ -1,0 +1,23 @@
+---
+interface Props {
+  title?: string;
+}
+
+const { title = 'Songbook' } = Astro.props;
+const base = import.meta.env.BASE_URL;
+// Ensure trailing slash
+const basePath = base.endsWith('/') ? base : base + '/';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <link rel="stylesheet" href={`${basePath}styles.css`}>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

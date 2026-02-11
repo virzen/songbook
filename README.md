@@ -60,7 +60,7 @@ Click the "Export" button to download all your songs as a JSON file. This file c
 
 ## Installation
 
-This is a static web application with no build process or dependencies required.
+This application is built with [Astro](https://astro.build/) and generates a static website that can be deployed anywhere.
 
 ### Option 1: GitHub Pages (Recommended)
 
@@ -74,16 +74,29 @@ The app is hosted on GitHub Pages and ready to use at the URL above.
    cd songbook
    ```
 
-2. Open `index.html` in your web browser, or serve it with a local web server:
+2. Install dependencies:
    ```bash
-   # Python 3
-   python -m http.server 8000
-   
-   # Node.js (with http-server)
-   npx http-server
+   npm install
    ```
 
-3. Open `http://localhost:8000` in your browser
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open `http://localhost:4321` in your browser
+
+### Building for Production
+
+```bash
+# Build the static site
+npm run build
+
+# Preview the production build
+npm run preview
+```
+
+The built files will be in the `dist/` directory and can be deployed to any static hosting service.
 
 ## Testing
 
@@ -109,7 +122,9 @@ See [tests/README.md](tests/README.md) for more information about the test suite
 
 ## Technical Details
 
-- **Pure HTML/CSS/JavaScript**: No frameworks or build tools required
+- **Astro**: Modern static site generator with optimal performance
+- **Static Output**: Fully pre-rendered HTML for fast page loads
+- **Client-Side Interactivity**: JavaScript runs in the browser for dynamic features
 - **Local Storage**: All data is stored in the browser's localStorage
 - **No Backend**: Completely client-side application
 - **Print Optimized**: CSS print styles for clean printed output

@@ -12,7 +12,7 @@ module.exports = defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:4321/songbook',
+    baseURL: 'http://localhost:4321',
     trace: 'on-first-retry',
   },
 
@@ -25,7 +25,7 @@ module.exports = defineConfig({
 
   webServer: {
     command: 'npm run preview',
-    url: 'http://localhost:4321/songbook',
+    url: 'http://localhost:4321',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },

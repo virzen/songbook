@@ -71,39 +71,20 @@ class SongbookApp {
             // Initialize Supabase client
             const client = supabase.createClient(supabaseUrl, supabaseKey);
             
-            // Generate or retrieve a unique random bigint for this browser/session
-            let userId = localStorage.getItem('supabaseUserId');
-            if (!userId) {
-                // Generate random bigint using crypto module
-                // Generate 8 bytes (64 bits) for a JavaScript safe integer range
-                const randomBytes = new Uint8Array(8);
-                self.crypto.getRandomValues(randomBytes);
-                
-                // Convert to bigint (JavaScript safe integer range)
-                let randomBigInt = 0n;
-                for (let i = 0; i < 8; i++) {
-                    randomBigInt = (randomBigInt << 8n) | BigInt(randomBytes[i]);
-                }
-                
-                // Convert to string for storage and ensure it's positive
-                userId = (randomBigInt & 0x7FFFFFFFFFFFFFFFn).toString();
-                localStorage.setItem('supabaseUserId', userId);
-            }
-            
-            // Test connection by trying to read from database using userId
-            const { data, error } = await client
+            // Test connection by trying to query database
+            // We'll create a record on first save, not during configuration
+            const { error: testError } = await client
                 .from('global_state')
-                .select('state, id, username')
-                .eq('id', userId) // Use id field as the unique key
-                .single();
+                .select('id')
+                .limit(1);
             
-            if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found (user has no saved state yet)
-                throw new Error('Failed to connect to database: ' + error.message);
+            if (testError) {
+                throw new Error('Failed to connect to database: ' + testError.message);
             }
 
             // Only set state after successful connection
             this.supabaseClient = client;
-            this.userId = userId; // Store the unique user ID
+            this.userId = null; // Will be set after first insert
             this.username = username; // Username is just for logging/display
             this.configured = true;
 
@@ -111,10 +92,21 @@ class SongbookApp {
             localStorage.setItem('supabaseUrl', supabaseUrl);
             localStorage.setItem('supabaseKey', supabaseKey);
 
-            // Load data if found
-            if (data && data.state) {
-                const parsed = JSON.parse(data.state);
-                this.songs = parsed.songs || [];
+            // Try to load existing data for this username (get most recent)
+            const { data: existingData, error: loadError } = await client
+                .from('global_state')
+                .select('id, state, username')
+                .eq('username', username)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .single();
+            
+            if (existingData) {
+                this.userId = existingData.id;
+                if (existingData.state) {
+                    const parsed = JSON.parse(existingData.state);
+                    this.songs = parsed.songs || [];
+                }
             }
 
             // Hide modal and show app
@@ -140,11 +132,21 @@ class SongbookApp {
     // Supabase Database Methods
     async loadFromDatabase() {
         try {
-            const { data, error } = await this.supabaseClient
+            // If we have a userId, load by id, otherwise load most recent by username
+            let query = this.supabaseClient
                 .from('global_state')
-                .select('state, id, username')
-                .eq('id', this.userId) // Use id field as the unique key
-                .single();
+                .select('state, id, username');
+            
+            if (this.userId) {
+                query = query.eq('id', this.userId).single();
+            } else {
+                query = query.eq('username', this.username)
+                    .order('created_at', { ascending: false })
+                    .limit(1)
+                    .single();
+            }
+            
+            const { data, error } = await query;
 
             if (error) {
                 // If no data found, it's not an error - just empty state
@@ -158,6 +160,10 @@ class SongbookApp {
             if (data && data.state) {
                 const parsed = JSON.parse(data.state);
                 this.songs = parsed.songs || [];
+                // Store the id for future saves
+                if (data.id) {
+                    this.userId = data.id;
+                }
             }
 
             return { error: null };
@@ -180,18 +186,23 @@ class SongbookApp {
         try {
             const stateData = JSON.stringify({ songs: this.songs });
             
-            const { error } = await this.supabaseClient
+            // Use insert instead of upsert - let database auto-populate id and created_at
+            const { data, error } = await this.supabaseClient
                 .from('global_state')
-                .upsert({
-                    id: this.userId, // Use id field as the unique key (bigint)
-                    username: this.username, // Include username for logging/display
-                    state: stateData
-                }, {
-                    onConflict: 'id'
-                });
+                .insert({
+                    username: this.username, // Only send username
+                    state: stateData         // Only send state
+                })
+                .select('id')
+                .single();
 
             if (error) {
                 throw new Error('Database save failed: ' + error.message);
+            }
+
+            // Store the auto-generated id for future reference
+            if (data && data.id) {
+                this.userId = data.id;
             }
 
             return { error: null };

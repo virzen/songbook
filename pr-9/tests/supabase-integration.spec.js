@@ -54,7 +54,7 @@ test.describe('Mock Database Integration', () => {
             from: (tableName) => {
               return {
                 select: (columns) => {
-                  return {
+                  const selectObj = {
                     eq: (column, value) => {
                       return {
                         single: async () => {
@@ -67,7 +67,7 @@ test.describe('Mock Database Integration', () => {
                             return { 
                               data: { 
                                 state: window.mockSupabaseData.data, 
-                                id: value,
+                                id: window.mockSupabaseData.id || 1,
                                 username: window.mockSupabaseData.username || 'testuser'
                               }, 
                               error: null 
@@ -79,20 +79,80 @@ test.describe('Mock Database Integration', () => {
                             data: null, 
                             error: { code: 'PGRST116', message: 'No rows found' } 
                           };
+                        },
+                        order: (field, options) => {
+                          return {
+                            limit: (count) => {
+                              return {
+                                single: async () => {
+                                  if (window.mockSupabaseData.data) {
+                                    return {
+                                      data: {
+                                        state: window.mockSupabaseData.data,
+                                        id: window.mockSupabaseData.id || 1,
+                                        username: window.mockSupabaseData.username || 'testuser'
+                                      },
+                                      error: null
+                                    };
+                                  }
+                                  return { data: null, error: { code: 'PGRST116' } };
+                                }
+                              };
+                            }
+                          };
+                        }
+                      };
+                    },
+                    limit: async (count) => {
+                      // For connection test - return success
+                      return { data: [], error: null };
+                    },
+                    order: (field, options) => {
+                      return {
+                        limit: (count) => {
+                          return {
+                            single: async () => {
+                              if (window.mockSupabaseData.data) {
+                                return {
+                                  data: {
+                                    state: window.mockSupabaseData.data,
+                                    id: window.mockSupabaseData.id || 1,
+                                    username: window.mockSupabaseData.username || 'testuser'
+                                  },
+                                  error: null
+                                };
+                              }
+                              return { data: null, error: { code: 'PGRST116' } };
+                            }
+                          };
                         }
                       };
                     }
                   };
+                  return selectObj;
                 },
-                upsert: async (data, options) => {
-                  if (window.mockSupabaseData.shouldFail) {
-                    return { error: { message: 'Save failed' } };
-                  }
-                  
-                  window.mockSupabaseData.data = data.state;
-                  window.mockSupabaseData.username = data.username; // Store username
-                  window.mockSupabaseData.saveCount++;
-                  return { error: null };
+                insert: (data) => {
+                  return {
+                    select: (columns) => {
+                      return {
+                        single: async () => {
+                          if (window.mockSupabaseData.shouldFail) {
+                            return { data: null, error: { message: 'Save failed' } };
+                          }
+                          
+                          window.mockSupabaseData.data = data.state;
+                          window.mockSupabaseData.username = data.username;
+                          window.mockSupabaseData.id = window.mockSupabaseData.id || Math.floor(Math.random() * 1000000);
+                          window.mockSupabaseData.saveCount++;
+                          
+                          return { 
+                            data: { id: window.mockSupabaseData.id },
+                            error: null 
+                          };
+                        }
+                      };
+                    }
+                  };
                 }
               };
             }

@@ -25,7 +25,7 @@ module.exports = defineConfig({
 
   webServer: {
     command: 'npm run preview',
-    url: 'http://localhost:4321',
+    url: 'http://localhost:4321/songbook',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },

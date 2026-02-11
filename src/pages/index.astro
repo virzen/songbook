@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+const basePath = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 ---
 
 <Layout title="Songbook">
@@ -114,9 +115,6 @@ That [Am]saved a [G]wretch like [C]me"></textarea>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        import { initSongbook } from '../scripts/songbook.js';
-        initSongbook();
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" is:inline></script>
+    <script src={`${basePath}songbook.js`} is:inline></script>
 </Layout>

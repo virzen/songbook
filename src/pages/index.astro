@@ -1,0 +1,120 @@
+---
+import Layout from '../layouts/Layout.astro';
+const basePath = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
+---
+
+<Layout title="Songbook">
+    <!-- Configuration Modal -->
+    <div id="configModal" class="modal active">
+        <div class="modal-content">
+            <h2>🎵 Songbook Configuration</h2>
+            <p>Please provide your Supabase credentials to continue:</p>
+            <form id="configForm">
+                <div class="form-group">
+                    <label for="supabaseUrl">Supabase URL</label>
+                    <input type="text" id="supabaseUrl" required placeholder="https://your-project.supabase.co">
+                </div>
+                <div class="form-group">
+                    <label for="supabaseKey">Supabase Key</label>
+                    <input type="password" id="supabaseKey" required placeholder="Your Supabase anon key">
+                </div>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required placeholder="Your username">
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">Connect</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1 id="mainTitle">🎵 Songbook</h1>
+            <div class="header-buttons">
+                <button id="addSongBtn" class="btn btn-primary">+ Add Song</button>
+                <button id="importBtn" class="btn">Import</button>
+                <button id="exportBtn" class="btn">Export</button>
+            </div>
+        </header>
+
+        <main id="mainContent">
+            <!-- Song List View -->
+            <div id="songListView" class="view">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search songs..." />
+                </div>
+                <div id="songList" class="song-list"></div>
+                <div id="emptySongList" class="empty-state">
+                    <p>No songs yet. Click "Add Song" to get started!</p>
+                </div>
+            </div>
+
+            <!-- Song Display View -->
+            <div id="songDisplayView" class="view" style="display: none;">
+                <div class="song-controls">
+                    <button id="backToListBtn" class="btn">← Back to List</button>
+                    <div class="song-actions">
+                        <button id="editSongBtn" class="btn">Edit</button>
+                        <button id="printSongBtn" class="btn">Print</button>
+                        <button id="deleteSongBtn" class="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+                <div id="songContent" class="song-content"></div>
+            </div>
+
+            <!-- Song Edit View -->
+            <div id="songEditView" class="view" style="display: none;">
+                <div class="song-controls">
+                    <button id="cancelEditBtn" class="btn">Cancel</button>
+                    <button id="saveSongBtn" class="btn btn-primary">Save</button>
+                </div>
+                <form id="songForm">
+                    <div class="form-group">
+                        <label for="songTitle">Song Title</label>
+                        <input type="text" id="songTitle" required placeholder="Enter song title">
+                    </div>
+                    <div class="form-group">
+                        <label for="songArtist">Artist</label>
+                        <input type="text" id="songArtist" placeholder="Enter artist name">
+                    </div>
+                    <div class="form-group">
+                        <label for="songLyrics">Lyrics with Chords</label>
+                        <textarea id="songLyrics" rows="15" required placeholder="Enter lyrics with chords in brackets, e.g.:
+[C]Amazing [F]grace, how [C]sweet the sound
+That [Am]saved a [G]wretch like [C]me"></textarea>
+                        <small class="help-text">Put chords in square brackets [C] before the word they apply to</small>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <!-- Import Modal -->
+        <div id="importModal" class="modal">
+            <div class="modal-content">
+                <h2>Import Songs</h2>
+                <div class="import-options">
+                    <div class="import-option">
+                        <h3>Option 1: Select a file</h3>
+                        <input type="file" id="importFile" accept=".json,application/json" />
+                    </div>
+                    <div class="import-divider">
+                        <span>OR</span>
+                    </div>
+                    <div class="import-option">
+                        <h3>Option 2: Paste JSON data</h3>
+                        <textarea id="importData" rows="10" placeholder='{"songs": [...]}'></textarea>
+                    </div>
+                </div>
+                <div class="modal-buttons">
+                    <button id="cancelImportBtn" class="btn">Cancel</button>
+                    <button id="confirmImportBtn" class="btn btn-primary">Import</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" is:inline></script>
+    <script src={`${basePath}songbook.js`} is:inline></script>
+</Layout>

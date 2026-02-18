@@ -4,6 +4,9 @@
   "description": "A simple, front-end only web application for managing and displaying song lyrics with chords. Perfect for musicians who want to keep their songbook organized and accessible.",
   "main": "app.js",
   "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui",
@@ -22,7 +25,9 @@
   },
   "homepage": "https://github.com/virzen/songbook#readme",
   "devDependencies": {
+    "@astrojs/node": "^9.5.3",
     "@playwright/test": "^1.58.2",
+    "astro": "^5.17.2",
     "http-server": "^14.1.1"
   },
   "dependencies": {

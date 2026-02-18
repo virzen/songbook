@@ -8,14 +8,14 @@ const { test, expect } = require('@playwright/test');
 
 // Helper to clear local storage and set up test data
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/?testMode=true');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
 });
 
 test.describe('Visual Snapshots', () => {
   test('should match snapshot of empty song list', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Wait for the page to be fully loaded
     await page.waitForSelector('#emptySongList');
@@ -27,7 +27,7 @@ test.describe('Visual Snapshots', () => {
   });
 
   test('should match snapshot of song list with songs', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Add sample songs
     const songs = [
@@ -55,7 +55,7 @@ test.describe('Visual Snapshots', () => {
   });
 
   test('should match snapshot of add song form', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Click Add Song button
     await page.click('#addSongBtn');
@@ -71,7 +71,7 @@ test.describe('Visual Snapshots', () => {
   });
 
   test('should match snapshot of song display with chords', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Add a song with chords
     await page.click('#addSongBtn');
@@ -90,7 +90,7 @@ test.describe('Visual Snapshots', () => {
   });
 
   test('should match snapshot of edit song form with data', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Add a song first
     await page.click('#addSongBtn');
@@ -113,7 +113,7 @@ test.describe('Visual Snapshots', () => {
   });
 
   test('should match snapshot of search results', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Add multiple songs
     const songs = [
@@ -142,7 +142,7 @@ test.describe('Visual Snapshots', () => {
   });
 
   test('should match snapshot of import modal', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Open import modal
     await page.click('#importBtn');
@@ -157,7 +157,7 @@ test.describe('Visual Snapshots', () => {
   });
 
   test('should match snapshot of search with no results', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Add a song
     await page.click('#addSongBtn');
@@ -182,7 +182,7 @@ test.describe('Visual Snapshots', () => {
   test('should match snapshot of mobile viewport', async ({ page }) => {
     // Set mobile viewport
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Add a song
     await page.click('#addSongBtn');

@@ -12,7 +12,7 @@ module.exports = defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:8080',
+    baseURL: 'http://localhost:4321',
     trace: 'on-first-retry',
   },
 
@@ -24,8 +24,8 @@ module.exports = defineConfig({
   ],
 
   webServer: {
-    command: 'npx http-server -p 8080 -c-1',
-    url: 'http://localhost:8080',
+    command: 'npm run preview',
+    url: 'http://localhost:4321',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },

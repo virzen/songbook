@@ -15,7 +15,7 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('Song List View', () => {
   test('should display empty state when no songs exist', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Check for empty state message
     const emptyState = page.locator('#emptySongList');
@@ -24,7 +24,7 @@ test.describe('Song List View', () => {
   });
 
   test('should display app title and main buttons', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Check header elements
     await expect(page.locator('#mainTitle')).toHaveText('🎵 Songbook');
@@ -34,7 +34,7 @@ test.describe('Song List View', () => {
   });
 
   test('should show search input', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     const searchInput = page.locator('#searchInput');
     await expect(searchInput).toBeVisible();
@@ -44,7 +44,7 @@ test.describe('Song List View', () => {
 
 test.describe('Add Song Functionality', () => {
   test('should open add song form when clicking Add Song button', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Click Add Song button
     await page.click('#addSongBtn');
@@ -57,7 +57,7 @@ test.describe('Add Song Functionality', () => {
   });
 
   test('should add a new song successfully', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     await page.click('#addSongBtn');
     
     // Fill in song details
@@ -75,7 +75,7 @@ test.describe('Add Song Functionality', () => {
   });
 
   test('should persist song in local storage', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     await page.click('#addSongBtn');
     
     await page.fill('#songTitle', 'Persistent Song');
@@ -93,7 +93,7 @@ test.describe('Add Song Functionality', () => {
   });
 
   test('should cancel adding a song and return to list', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     await page.click('#addSongBtn');
     
     await page.fill('#songTitle', 'Cancelled Song');
@@ -107,7 +107,7 @@ test.describe('Add Song Functionality', () => {
   });
 
   test('should require title and lyrics to save', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     await page.click('#addSongBtn');
     
     // Try to save without filling required fields
@@ -122,7 +122,7 @@ test.describe('Add Song Functionality', () => {
 
 test.describe('Song Display and Navigation', () => {
   test('should display song with formatted chords', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     await page.click('#addSongBtn');
     
     await page.fill('#songTitle', 'Chord Test');
@@ -139,7 +139,7 @@ test.describe('Song Display and Navigation', () => {
   });
 
   test('should handle empty lines in lyrics', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     await page.click('#addSongBtn');
     
     await page.fill('#songTitle', 'Multi-line Song');
@@ -151,7 +151,7 @@ test.describe('Song Display and Navigation', () => {
   });
 
   test('should navigate back to list from song display', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     await page.click('#addSongBtn');
     
     await page.fill('#songTitle', 'Nav Test');
@@ -167,7 +167,7 @@ test.describe('Song Display and Navigation', () => {
   });
 
   test('should navigate to song details when clicking song card', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     await page.click('#addSongBtn');
     
     await page.fill('#songTitle', 'Click Test');
@@ -184,7 +184,7 @@ test.describe('Song Display and Navigation', () => {
   });
 
   test('should navigate to list when clicking main title', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     await page.click('#addSongBtn');
     
     await page.fill('#songTitle', 'Title Click Test');
@@ -201,7 +201,7 @@ test.describe('Song Display and Navigation', () => {
 
 test.describe('Edit Song Functionality', () => {
   test('should edit an existing song', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Create a song first
     await page.click('#addSongBtn');
@@ -227,7 +227,7 @@ test.describe('Edit Song Functionality', () => {
   });
 
   test('should cancel editing and return to song display', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     await page.click('#addSongBtn');
     await page.fill('#songTitle', 'Cancel Edit Test');
     await page.fill('#songLyrics', 'Original');
@@ -247,7 +247,7 @@ test.describe('Edit Song Functionality', () => {
 
 test.describe('Delete Song Functionality', () => {
   test('should delete a song after confirmation', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     await page.click('#addSongBtn');
     await page.fill('#songTitle', 'Delete Me');
     await page.fill('#songLyrics', 'Test');
@@ -265,7 +265,7 @@ test.describe('Delete Song Functionality', () => {
   });
 
   test('should not delete song if user cancels', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     await page.click('#addSongBtn');
     await page.fill('#songTitle', 'Keep Me');
     await page.fill('#songLyrics', 'Test');
@@ -284,7 +284,7 @@ test.describe('Delete Song Functionality', () => {
 
 test.describe('Search Functionality', () => {
   test('should filter songs by title', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Add multiple songs
     const songs = [
@@ -311,7 +311,7 @@ test.describe('Search Functionality', () => {
   });
 
   test('should filter songs by artist', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     const songs = [
       { title: 'Song A', artist: 'Artist One' },
@@ -336,7 +336,7 @@ test.describe('Search Functionality', () => {
   });
 
   test('should show no results message when search has no matches', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     await page.click('#addSongBtn');
     await page.fill('#songTitle', 'Test Song');
@@ -352,7 +352,7 @@ test.describe('Search Functionality', () => {
   });
 
   test('should be case insensitive', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     await page.click('#addSongBtn');
     await page.fill('#songTitle', 'Test Song');
@@ -369,7 +369,7 @@ test.describe('Search Functionality', () => {
 
 test.describe('Import Functionality', () => {
   test('should open import modal when clicking Import button', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     await page.click('#importBtn');
     
@@ -379,7 +379,7 @@ test.describe('Import Functionality', () => {
   });
 
   test('should close import modal when clicking Cancel', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     await page.click('#importBtn');
     await page.click('#cancelImportBtn');
@@ -388,7 +388,7 @@ test.describe('Import Functionality', () => {
   });
 
   test('should import songs from JSON text', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     await page.click('#importBtn');
     
@@ -426,7 +426,7 @@ test.describe('Import Functionality', () => {
   });
 
   test('should show error for invalid JSON', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     await page.click('#importBtn');
     
@@ -443,7 +443,7 @@ test.describe('Import Functionality', () => {
   });
 
   test('should show error when no data provided', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     await page.click('#importBtn');
     
@@ -456,7 +456,7 @@ test.describe('Import Functionality', () => {
   });
 
   test('should avoid importing duplicate songs by ID', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // First import
     await page.click('#importBtn');
@@ -490,7 +490,7 @@ test.describe('Import Functionality', () => {
 
 test.describe('Export Functionality', () => {
   test('should export songs as JSON file', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Add a song first
     await page.click('#addSongBtn');
@@ -510,7 +510,7 @@ test.describe('Export Functionality', () => {
   });
 
   test('should export empty songbook', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     const downloadPromise = page.waitForEvent('download');
     await page.click('#exportBtn');
@@ -522,7 +522,7 @@ test.describe('Export Functionality', () => {
 
 test.describe('Print Functionality', () => {
   test('should have print button on song display', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     await page.click('#addSongBtn');
     await page.fill('#songTitle', 'Print Test');
@@ -535,7 +535,7 @@ test.describe('Print Functionality', () => {
 
 test.describe('Song List Sorting', () => {
   test('should display songs sorted alphabetically by title', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     const songs = ['Zebra Song', 'Apple Song', 'Moon Song'];
     
@@ -554,7 +554,7 @@ test.describe('Song List Sorting', () => {
 
 test.describe('Local Storage Persistence', () => {
   test('should maintain songs across page reloads', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     // Add songs
     await page.click('#addSongBtn');
@@ -573,7 +573,7 @@ test.describe('Local Storage Persistence', () => {
   });
 
   test('should persist edited songs', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     await page.click('#addSongBtn');
     await page.fill('#songTitle', 'Edit Persist');
@@ -597,7 +597,7 @@ test.describe('Local Storage Persistence', () => {
 
 test.describe('Edge Cases', () => {
   test('should handle special characters in song title', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     await page.click('#addSongBtn');
     await page.fill('#songTitle', 'Song with "quotes" & <tags>');
@@ -608,7 +608,7 @@ test.describe('Edge Cases', () => {
   });
 
   test('should handle songs without artist', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     await page.click('#addSongBtn');
     await page.fill('#songTitle', 'No Artist');
@@ -619,7 +619,7 @@ test.describe('Edge Cases', () => {
   });
 
   test('should handle empty artist field in song list', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     await page.click('#addSongBtn');
     await page.fill('#songTitle', 'No Artist List');
@@ -632,7 +632,7 @@ test.describe('Edge Cases', () => {
   });
 
   test('should handle multiple chord formats', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/?testMode=true');
     
     await page.click('#addSongBtn');
     await page.fill('#songTitle', 'Complex Chords');

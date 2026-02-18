@@ -1,0 +1,28 @@
+{
+  "songs": [
+    {
+      "id": "1",
+      "title": "Happy Birthday",
+      "artist": "Traditional",
+      "lyrics": "[C]Happy birthday to [G]you\n[G7]Happy birthday to [C]you\nHappy [C7]birthday dear [F]friend\n[C]Happy birthday to [G]you [C]",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "title": "Row Row Row Your Boat",
+      "artist": "Traditional",
+      "lyrics": "[C]Row, row, row your boat\n[C]Gently down the stream\n[C]Merrily, merrily, merrily, merrily\n[C]Life is but a dream",
+      "createdAt": "2024-01-02T00:00:00.000Z",
+      "updatedAt": "2024-01-02T00:00:00.000Z"
+    },
+    {
+      "id": "3",
+      "title": "Twinkle Twinkle Little Star",
+      "artist": "Traditional",
+      "lyrics": "[C]Twinkle, twinkle, [F]little [C]star\n[F]How I [C]wonder [G]what you [C]are\n[C]Up a[F]bove the [C]world so [G]high\n[C]Like a [F]diamond [C]in the [G]sky\n\n[C]Twinkle, twinkle, [F]little [C]star\n[F]How I [C]wonder [G]what you [C]are",
+      "createdAt": "2024-01-03T00:00:00.000Z",
+      "updatedAt": "2024-01-03T00:00:00.000Z"
+    }
+  ]
+}

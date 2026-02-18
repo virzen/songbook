@@ -19,16 +19,15 @@ test.describe('Supabase Configuration UI', () => {
     await expect(page.locator('#username')).toBeVisible();
   });
 
-  test('should hide import and export buttons', async ({ page }) => {
+  test('should show import and export buttons', async ({ page }) => {
     await page.goto('/');
     
     // In the Astro version, these buttons are visible by default
-    // This test may need to be updated or removed based on new requirements
     const importBtn = page.locator('#importBtn');
     const exportBtn = page.locator('#exportBtn');
     
-    // Skip this test as buttons are now visible by default
-    test.skip();
+    await expect(importBtn).toBeVisible();
+    await expect(exportBtn).toBeVisible();
   });
 });
 
@@ -99,7 +98,10 @@ test.describe('Mock Database Integration', () => {
                       };
                     },
                     limit: async (count) => {
-                      // For connection test - return success
+                      // For connection test - check if should fail
+                      if (window.mockSupabaseData.shouldFail) {
+                        return { data: null, error: { message: 'Connection failed' } };
+                      }
                       return { data: [], error: null };
                     },
                     order: (field, options) => {
@@ -181,7 +183,7 @@ test.describe('Mock Database Integration', () => {
     await expect(page.locator('#songListView')).toBeVisible();
   });
 
-  test.skip('should show error on connection failure', async ({ page }) => {
+  test('should show error on connection failure', async ({ page }) => {
     await page.goto('/');  // Navigate without testMode
     
     // Set mock to fail
